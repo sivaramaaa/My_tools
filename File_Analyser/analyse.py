@@ -7,6 +7,7 @@ boo = False
 file = ''
 zip = False
 pdf = False
+
 def cli_parser():
     global foo , boo , file , zip , pdf 
     parser = argparse.ArgumentParser()
