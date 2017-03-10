@@ -1,0 +1,2 @@
+ACTION=="add", SUBSYSTEM=="usb",  RUN+="/home/siva/Desktop/SIh/device-plug.sh"
+ACTION=="remove", SUBSYSTEM=="usb", RUN+="/home/siva/Desktop/SIh/device-plug.sh"
