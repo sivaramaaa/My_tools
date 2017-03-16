@@ -1,0 +1,19 @@
+block.sh
+
+umount /dev/sdb1
+sudo   mount -o gid=499,uid=499  /dev/sdb1  /media/restricted/usb
+
+
+device-plug.sh
+
+
+#!/bin/bash
+
+export DISPLAY=:0
+export XAUTHORITY=/home/siva/.Xauthority
+#zenity --info --text 'USB Inserted'
+notify-send -i /home/siva/Desktop/SIh/pirate-sword-skull1-2-256.png "USB Inserted" 
+sleep 5
+./block.sh
+value=$(</home/siva/Desktop/SIh/usb_path)
+echo 1 > $value
