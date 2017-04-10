@@ -1,0 +1,1 @@
+dconf write  /org/gnome/shell/favorite-apps "['org.gnome.Nautilus.desktop','idalaunch.desktop', 'gnome-terminal.desktop', 'firefox-esr.desktop', 'kali-msfconsole.desktop', 'kali-armitage.desktop', 'kali-burpsuite.desktop', 'kali-maltego.desktop', 'kali-beef.desktop', 'kali-faraday.desktop', 'leafpad.desktop', 'gnome-tweak-tool.desktop']"
