@@ -1,6 +1,14 @@
 ## Blind Format String Exploitation 
 This is a module to exploit blind format string vulnerability  
 
+## Vuln Tips
+
+After solving a recent CTF i got some idea about this vuln 
+
+  * All u have to do is find offset where ur input is stored (probably 100 bytes away from ur input)
+  * Keep address after format str coz if null byte is present printf stops there
+  * Write byte by byte (after one write , the no_of_bytes written is freshly  calculated )
+
 ### How to use it ?
 ```python
 from pwn import *
